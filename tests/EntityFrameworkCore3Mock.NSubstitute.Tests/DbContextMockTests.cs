@@ -86,7 +86,7 @@ namespace EntityFrameworkCore3Mock.NSubstitute.Tests
             // Assert
             var ex = Assert.Throws<ArgumentException>(CreateDbMock);
             Assert.That(ex.ParamName, Is.EqualTo("dbSetSelector"));
-            Assert.That(ex.Message, Does.StartWith("DbSetMock for Users already created"));
+            Assert.That(ex.Message, Does.StartWith("DbSetMock for entity User already created"));
         }
 
         [Test]
@@ -255,12 +255,20 @@ namespace EntityFrameworkCore3Mock.NSubstitute.Tests
                 }
             }
 
-            // Assert            
+            // Assert
             Assert.AreEqual(300, results.Count());
             foreach (var result in results)
             {
                 Assert.IsNotEmpty(result);
             }
+        }
+
+        [Test]
+        public void DbContextMock_CreateDbSetMock_GenericDbSetSelector_ShouldReturnDbSetMock()
+        {
+            var dbContextMock = new DbContextMock<TestDbContext>(Options);
+            var dbSetMock = dbContextMock.CreateDbSetMock(x => x.Set<User>());
+            Assert.That(dbSetMock.Object, Is.Not.Null);
         }
 
         [Test]
