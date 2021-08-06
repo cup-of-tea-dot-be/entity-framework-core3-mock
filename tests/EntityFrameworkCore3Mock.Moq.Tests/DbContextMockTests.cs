@@ -57,7 +57,7 @@ namespace EntityFrameworkCore3Mock.Tests
             dbContextMock.CreateDbSetMock(x => x.Users);
             var ex = Assert.Throws<ArgumentException>(() => dbContextMock.CreateDbSetMock(x => x.Users));
             Assert.That(ex.ParamName, Is.EqualTo("dbSetSelector"));
-            Assert.That(ex.Message, Does.StartWith("DbSetMock for Users already created"));
+            Assert.That(ex.Message, Does.StartWith("DbSetMock for entity User already created"));
         }
 
         [Test]
@@ -183,6 +183,14 @@ namespace EntityFrameworkCore3Mock.Tests
             Assert.That(dbSetMock.Object.First(x => x.Url == "A").LoggingRepositoryId, Is.EqualTo(1));
             Assert.That(dbSetMock.Object.First(x => x.Url == "B").LoggingRepositoryId, Is.EqualTo(2));
             Assert.That(dbSetMock.Object.First(x => x.Url == "C").LoggingRepositoryId, Is.EqualTo(3));
+        }
+
+        [Test]
+        public void DbContextMock_CreateDbSetMock_GenericDbSetSelector_ShouldReturnDbSetMock()
+        {
+            var dbContextMock = new DbContextMock<TestDbContext>(Options);
+            var dbSetMock = dbContextMock.CreateDbSetMock(x => x.Set<User>());
+            Assert.That(dbSetMock.Object, Is.Not.Null);
         }
 
         [Test]
